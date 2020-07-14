@@ -1,0 +1,57 @@
+# Reference: <https://postmarketos.org/devicepkg>
+# Maintainer: Wiktor Strzebała <wiktorek140@tlen.pl>
+# Maintainer: Minecrell <minecrell@minecrell.net>
+pkgname=device-motorola-surnia
+pkgdesc="Motorola Moto E 2015 LTE"
+pkgver=4
+pkgrel=2
+url="https://postmarketos.org"
+license="MIT"
+arch="aarch64"
+options="!check !archcheck"
+depends="postmarketos-base mkbootimg soc-qcom-msm8916"
+makedepends="devicepkg-dev"
+source="deviceinfo modprobe.conf"
+
+subpackages="
+	$pkgname-kernel-mainline:kernel_mainline
+	$pkgname-kernel-mainline-modem:kernel_mainline_modem
+	$pkgname-nonfree-firmware:nonfree_firmware
+	$pkgname-nonfree-firmware-modem:nonfree_firmware_modem
+"
+
+build() {
+	devicepkg_build $startdir $pkgname
+}
+
+package() {
+	devicepkg_package $startdir $pkgname
+}
+
+kernel_mainline() {
+	pkgdesc="Mainline kernel (no modem, audio routed directly)"
+	depends="linux-postmarketos-qcom-msm8916"
+	devicepkg_subpackage_kernel $startdir $pkgname $subpkgname
+}
+
+kernel_mainline_modem() {
+	pkgdesc="Mainline kernel (non-free modem, audio routed through ADSP)"
+	depends="linux-postmarketos-qcom-msm8916 soc-qcom-msm8916-modem"
+	devicepkg_subpackage_kernel $startdir $pkgname $subpkgname
+}
+
+nonfree_firmware() {
+	pkgdesc="GPU/Wi-Fi/Bluetooth/Video(/Modem) firmware"
+	depends="linux-firmware-qcom firmware-motorola-surnia-wcnss firmware-motorola-surnia-venus firmware-motorola-surnia-keymaster"
+	mkdir "$subpkgdir"
+}
+
+nonfree_firmware_modem() {
+	pkgdesc="Modem firmware"
+	depends="firmware-motorola-surnia-modem"
+	install_if="$pkgname-nonfree-firmware $pkgname-kernel-mainline-modem"
+	mkdir "$subpkgdir"
+}
+
+sha512sums="1cadd802942f1387edc57dda1ca9e8666e1ac95d064a347f60cca697050563603a19332a8916e6e1e13c82f4ec954c57aa63346d7ab8810ad1dbdae17b53c628  deviceinfo
+828019399b30ccc51323d28920213bcc6337f640185387ec15e6e44a0a394372a7c04fad130dcc4eb8b70945728c2442c059d00f2f94e611ba4bd9ed99c95f4a  modprobe.conf"

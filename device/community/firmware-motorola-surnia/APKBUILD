@@ -1,0 +1,50 @@
+# Maintainer: Wiktor Strzębała <wiktorek140@tlen.pl>
+pkgname=firmware-motorola-surnia
+pkgver=1
+pkgrel=2
+pkgdesc="Firmware for Motorola E 2015 LTE"
+url="https://github.com/wiktorek140/firmware-motorola-surnia"
+subpackages="$pkgname-wcnss $pkgname-venus $pkgname-modem $pkgname-keymaster"
+arch="aarch64"
+license="proprietary"
+options="!check !strip !archcheck"
+
+_commit="mainline"
+source="$pkgname-$_commit.tar.gz::$url/archive/$_commit.tar.gz"
+
+_fwdir="/lib/firmware/postmarketos"
+
+package() {
+	mkdir -p "$pkgdir"
+}
+
+wcnss() {
+	pkgdesc="Motorola Moto E 2015 LTE Wi-Fi/Bluetooth firmware"
+	cd "$srcdir/firmware-motorola-surnia-$_commit"
+	install -Dm644 wcnss.* -t "$subpkgdir/$_fwdir"
+	install -Dm644 wlan/prima/WCNSS_qcom_wlan_nv.bin -t "$subpkgdir/$_fwdir/wlan/prima"
+}
+
+venus() {
+	pkgdesc="Motorola Moto E 2015 LTE video firmware"
+	cd "$srcdir/firmware-motorola-surnia-$_commit"
+	install -Dm644 venus.b* -t "$subpkgdir/$_fwdir/qcom/venus-1.8"
+	install -Dm644 venus.mdt -t "$subpkgdir/$_fwdir/qcom/venus-1.8"
+}
+
+modem() {
+	pkgdesc="Motorola Moto E 2015 LTE modem firmware"
+	cd "$srcdir/firmware-motorola-surnia-$_commit"
+	install -Dm644 modem.* -t "$subpkgdir/$_fwdir"
+	install -Dm644 mba.mbn -t "$subpkgdir/$_fwdir"
+}
+
+keymaster() {
+	pkgdesc="Motorola Moto E 2015 LTE other firmware"
+	cd "$srcdir/firmware-motorola-surnia-$_commit"
+	install -Dm644 a* -t "$subpkgdir/$_fwdir"
+	install -Dm644 keymaster.* -t "$subpkgdir/$_fwdir"
+	install -Dm644 cpp_firmware_v1_4_0.fw -t "$subpkgdir/$_fwdir"
+}
+
+sha512sums="913943c7e168afdc9df46cc3fc68010abb106eb99d027e57f24f0e22c5227311424b38d93c7b1dff904b3b3b560f6a17eba6715e6d59efcc316631f779a4b154  firmware-motorola-surnia-mainline.tar.gz"
