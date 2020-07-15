@@ -4,7 +4,7 @@
 pkgname=device-motorola-surnia
 pkgdesc="Motorola Moto E 2015 LTE"
 pkgver=4
-pkgrel=2
+pkgrel=3
 url="https://postmarketos.org"
 license="MIT"
 arch="aarch64"
